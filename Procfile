@@ -1,1 +1,1 @@
-﻿web:    java -jar –Dserver.port=$PORT target/muistilista-1.0-SNAPSHOT.jar
+﻿web: java $JAVA_OPTS -Dserver.port=$PORT -jar target/*.jar 
