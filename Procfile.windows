@@ -1,0 +1,1 @@
+﻿term web: java -jar –Dserver.port=5000 target/muistilista-1.0-SNAPSHOT.jar
