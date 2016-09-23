@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Muistilista</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Tehtävä</h1>
+            <form th:action="@{/todo/{id}(id=${item.id})}" method="POST">
+                <div class="form-group">
+                    <label for="description">Kuvaus:</label>
+                    <input type="text" class="form-control" name="description" th:value="${item.description}" />
+                </div>
+                <input type="submit" value="Päivitä" class="btn btn-primary" />
+            </form>
+        </div>
+    </body>
+</html>
