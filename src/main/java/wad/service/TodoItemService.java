@@ -26,11 +26,13 @@ public class TodoItemService {
         item.setPriority(form.getPriority());
         item.setOwner(authenticatedUser.get());
         
-        Category cat = getCategory(form.getCategoryName());
-        item.setCategory(cat);
-        Category parentCat = catRepo.findOneByName(form.getParentCategory());
-        if(parentCat != null)
-            cat.setParentCategory(parentCat);
+        Category category = getCategory(form.getCategoryName());
+        if(category != null) {
+            item.setCategory(category);
+            Category parentCategory = catRepo.findOneByName(form.getParentCategory());
+            if(parentCategory != null)
+                category.setParentCategory(parentCategory);
+        }
         itemRepo.save(item);
     }
 

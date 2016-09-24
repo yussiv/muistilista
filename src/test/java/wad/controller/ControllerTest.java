@@ -91,6 +91,7 @@ public class ControllerTest {
                     post("/todo")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .param("description", description)
+                    .param("categoryName", "testing")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));

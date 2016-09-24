@@ -23,6 +23,7 @@ import wad.service.CategoryService;
 import wad.service.TodoItemService;
 
 @Controller
+@SessionAttributes({"todoItemForm"})
 public class TodoItemController {
     
     @Autowired
@@ -30,8 +31,13 @@ public class TodoItemController {
     @Autowired
     private CategoryService catService;
     
+    @ModelAttribute("todoItemForm")
+    public TodoItemForm getTodoItemForm() {
+        return new TodoItemForm();
+    }
+    
     @RequestMapping(value="/todo/{id}", method=RequestMethod.GET)
-    public String editItem(Model model, @PathVariable Long id) {
+    public String editItem(Model model, @PathVariable Long id, TodoItemForm todoItemForm) {
         model.addAttribute("item", itemService.get(id));
         model.addAttribute("categories", catService.findAll());
         return "edit-item";
@@ -46,10 +52,15 @@ public class TodoItemController {
     }
     
     @RequestMapping(value="/todo/{id}", method=RequestMethod.POST)
-    public String updateItem(@Valid @ModelAttribute TodoItemForm form, BindingResult bindingResult, @PathVariable Long id) {
+    public String updateItem(
+            @Valid @ModelAttribute("todoItemForm") TodoItemForm form, 
+            BindingResult bindingResult, @PathVariable Long id,
+            SessionStatus sessionStatus) {
+        
         if (bindingResult.hasErrors()) {
             return "redirect:/todo/" + id;
         }
+        sessionStatus.setComplete();
         itemService.update(id, form);
         return "redirect:/";
     }

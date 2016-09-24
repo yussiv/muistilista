@@ -5,7 +5,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class TodoItemForm {
-    @NotNull
     private String categoryName;
     private String parentCategory;
     @NotNull
