@@ -1,6 +1,7 @@
 
 package wad.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -11,8 +12,18 @@ public class Person extends AbstractPersistable<Long> {
     private String name;
     private String username;
     private String password;
-    @OneToMany
-    private List<TodoItem> todos;
+    @OneToMany(mappedBy="owner")
+    private List<TodoItem> todos = new ArrayList<>();
+    @OneToMany(mappedBy="owner")
+    private List<Category> categories = new ArrayList<>();
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
 
     public String getName() {
         return name;

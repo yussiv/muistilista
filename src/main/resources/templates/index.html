@@ -17,7 +17,7 @@
                         </form>
                     </div>
                     
-                    <span th:text="${item.description}">tehtävä</span>
+                    <span th:text="${item.description}">tehtävä</span> (<span th:if="${item.category.parentCategory}" th:text="${item.category.parentCategory.name}+' -> '"></span><span th:text="${item.category.name}"></span>, <span th:text="${item.priority}"></span>)
                 </li>
             </ul>
         </div>
@@ -28,7 +28,24 @@
                     <label for="description">Tehtävä:</label>
                     <input type="text" name="description" class="form-control"/>
                 </div>
-                <input type="submit" value="Lisää" class="btn btn-default" />
+                <div class="form-group">
+                    <label for="categoryName">Kategoria:</label>
+                    <input type="text" name="categoryName" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label for="parentCategory">Yläkategoria:</label>
+                    <select name="parentCategory" class="form-control">
+                        <option value="" selected="selected">Valitse kategoria</option>
+                        <option th:each="cat : ${categories}" th:value="${cat.name}" th:text="${cat.name}">Priority level</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="priority">Kiireellisyys:</label>
+                    <select name="priority" class="form-control">
+                        <option th:each="priority : ${T(wad.domain.TodoItem.Priority).values()}" th:value="${priority.name}" th:text="${priority}" th:attrappend="selected=${priority.name == 'NORMAL'}?'selected'">Priority level</option>
+                    </select>
+                </div>
+                <input type="submit" value="Lisää" class="btn btn-primary" />
             </form>
         </div>
         <footer th:replace="fragment/layout :: footer"></footer>
