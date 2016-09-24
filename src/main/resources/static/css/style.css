@@ -1,0 +1,16 @@
+form.delete-item {
+    display: inline;
+    padding-top: 2px;
+}
+li:after {
+    display: table;
+    content: " ";
+    clear: both;
+}
+
+footer {
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 1px solid #eee;
+    text-align: right;
+}

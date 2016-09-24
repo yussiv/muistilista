@@ -1,10 +1,7 @@
-<!DOCTYPE html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Muistilista</title>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <head th:include="fragment/layout :: head">
+        <title>Muistilista - Muokkaa tehtävää</title>
     </head>
     <body>
         <div class="container">
@@ -15,7 +12,10 @@
                     <input type="text" class="form-control" name="description" th:value="${item.description}" />
                 </div>
                 <input type="submit" value="Päivitä" class="btn btn-primary" />
+                <a type="button" class="btn btn-link" th:href="@{/}">Peruuta</a>
             </form>
         </div>
+        <footer th:replace="fragment/layout :: footer"></footer>
+        <div th:include="fragment/layout :: footer-scripts"></div>
     </body>
 </html>

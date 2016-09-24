@@ -1,33 +1,37 @@
-<!DOCTYPE html>
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Muistilista</title>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <head th:include="fragment/layout :: head">
+        <title id="pageTitle">Muistilista</title>
     </head>
     <body>
         <div class="container">
             <h1>Tehtävää</h1>
             <ul>
-                <li th:each="item : ${items}">
-                    <a class="pull-right" th:href="@{/todo/{id}(id=${item.id})}">Muokkaa</a><span th:text="${item.description}">tehtävä</span>
+                <li th:each="item : ${items}" class="">
+                    <div class="tool-buttons pull-right clearfix">
+                        <a class="edit-item" th:href="@{/todo/{id}(id=${item.id})}" aria-label="Muokkaa" title="Muokkaa" data-toggle="tooltip">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <form class="delete-item" th:action="@{/todo/{id}(id=${item.id})}" th:method="delete">
+                            <button type="submit" class="btn-link" aria-label="Poista" title="Poista" data-toggle="tooltip"><span class="glyphicon glyphicon-remove"></span></button>
+                        </form>
+                    </div>
+                    
+                    <span th:text="${item.description}">tehtävä</span>
                 </li>
             </ul>
+        </div>
+        <div class="container">
             <h4>Lisää tehtävä:</h4>
-            <form th:action="@{/todo}" method="POST" class="form-horizontal">
+            <form th:action="@{/todo}" method="POST" class="add-item form-inline">
                 <div class="form-group">
-                    <label for="description" class="control-label col-sm-1">Kuvaus:</label>
-                    <div class="col-sm-11">
-                        <input type="text" name="description" class="form-control"/>
-                    </div>
+                    <label for="description">Tehtävä:</label>
+                    <input type="text" name="description" class="form-control"/>
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-1 col-sm-11">
-                        <input type="submit" value="Päivitä" class="btn btn-primary" />
-                    </div>
-                </div>
+                <input type="submit" value="Lisää" class="btn btn-default" />
             </form>
         </div>
+        <footer th:replace="fragment/layout :: footer"></footer>
+        <div th:include="fragment/layout :: footer-scripts"></div>
     </body>
 </html>

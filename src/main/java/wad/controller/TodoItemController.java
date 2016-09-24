@@ -39,4 +39,13 @@ public class TodoItemController {
         }
         return "redirect:/";
     }
+    
+    @RequestMapping(value="/todo/{id}", method=RequestMethod.DELETE)
+    public String deleteItem(@PathVariable Long id) {
+        TodoItem item = itemRepo.findOne(id);
+        if(item != null) {
+            itemRepo.delete(item);
+        }
+        return "redirect:/";
+    }
 }

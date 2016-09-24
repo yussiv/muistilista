@@ -2,6 +2,7 @@ package wad.selenium;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.fluentlenium.adapter.FluentTest;
 import org.fluentlenium.core.domain.FluentList;
 import org.fluentlenium.core.domain.FluentWebElement;
@@ -25,7 +26,7 @@ import static org.fluentlenium.core.filter.FilterConstructor.withText;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TodoItemTest extends FluentTest {
     
-    public WebDriver webDriver = new HtmlUnitDriver();
+    public WebDriver webDriver = new HtmlUnitDriver(true);
     private String baseUrl;
 
     @Override
@@ -46,11 +47,11 @@ public class TodoItemTest extends FluentTest {
         goTo(baseUrl);
         
         String desc = "Do seleniumtests";
-        assertFalse(pageSource().contains(desc));
+        assertFalse("Page already contais item: " + desc, pageSource().contains(desc));
         
         fillFormAndSubmit(desc);
         
-        assertTrue(pageSource().contains(desc));
+        assertTrue("Page does not contain item: " + desc, pageSource().contains(desc));
     }
     
     @Test
@@ -64,23 +65,43 @@ public class TodoItemTest extends FluentTest {
         
         assertTrue(pageSource().contains(desc));
         
-        click(find("li", withText().contains(desc)).find("a", withText("Muokkaa")));
+        click(find("li", withText().contains(desc)).find("a.edit-item"));
         
-        assertTrue(webDriver.getCurrentUrl().matches(baseUrl + "todo/\\d$"));
+        assertTrue("Wrong url", webDriver.getCurrentUrl().matches(baseUrl + "todo/\\d$"));
         
         String newDesc = "Edited selenium item";
         
-        fillFormAndSubmit(newDesc);
+        fill(find("input[name='description']")).with(newDesc);
+        submit(find("form").first());
         
-        assertTrue(webDriver.getCurrentUrl().equals(baseUrl));
+        assertTrue("Wrong url", webDriver.getCurrentUrl().equals(baseUrl));
         
-        assertFalse(pageSource().contains(desc));
+        assertFalse("Old description is still present", pageSource().contains(desc));
         
-        assertTrue(pageSource().contains(newDesc));
+        assertTrue("Modified description not found", pageSource().contains(newDesc));
+    }
+    
+    @Test
+    public void canRemoveTodoItem() throws InterruptedException {
+        goTo(baseUrl);
+        
+        String desc = "Delete item with selenium";
+        assertFalse("A item with the same name already exists", pageSource().contains(desc));
+        
+        fillFormAndSubmit(desc);
+        
+        assertTrue("New item is not found on page", pageSource().contains(desc));
+        
+        //System.out.println("found: " + find("li", withText().contains(desc)).find(".delete-item").toString() + " at url: " + webDriver.getCurrentUrl());
+        submit(find("li", withText().contains(desc)).find(".delete-item").first());
+        assertEquals("Wrong url", baseUrl, webDriver.getCurrentUrl());
+        
+        assertFalse("Item was not removed", pageSource().contains(desc));
+        
     }
     
     private void fillFormAndSubmit(String description) {
-        fill(find("input[name='description']")).with(description);
-        submit(find("form").first());
+        fill(find(".add-item input[name='description']")).with(description);
+        submit(find(".add-item").first());
     }
 }

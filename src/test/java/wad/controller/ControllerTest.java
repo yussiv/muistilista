@@ -56,13 +56,7 @@ public class ControllerTest {
     @Test
     public void canAddItemToList() throws Exception {
         String description = UUID.randomUUID().toString();
-        mockMvc.perform(
-                    post("/todo")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .param("description", description)
-                )
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+        addItemToList(description);
         
         MvcResult result =mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
@@ -74,4 +68,31 @@ public class ControllerTest {
         
     }
     
+    @Test
+    public void canRemoveItemFromList() throws Exception {
+        String description = UUID.randomUUID().toString();
+        
+        addItemToList(description);
+        
+        TodoItem item = itemRepo.findOneByDescription(description);
+        
+        assertNotNull("Item with given description not found in repository: "+description,item);
+        
+        mockMvc.perform(delete("/todo/"+item.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+        
+        assertNull("Item was not deleted correctly", itemRepo.findOne(item.getId()));
+        
+    }
+    
+    private void addItemToList(String description) throws Exception {
+        mockMvc.perform(
+                    post("/todo")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .param("description", description)
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
 }

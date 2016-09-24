@@ -6,4 +6,6 @@ import wad.domain.TodoItem;
 
 public interface TodoItemRepository extends JpaRepository<TodoItem,Long> {
 
+    public TodoItem findOneByDescription(String description);
+
 }
