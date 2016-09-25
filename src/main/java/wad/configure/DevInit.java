@@ -41,7 +41,21 @@ public class DevInit {
         item.setPriority(TodoItem.Priority.NORMAL);
         itemRepo.save(item);
         
+        Category cat2 = new Category();
+        cat2.setName("wepa");
+        cat2.setOwner(p);
+        cat2.setParentCategory(cat);
+        catRepo.save(cat2);
+        
+        TodoItem item2 = new TodoItem();
+        item2.setDescription("Hoida autentikointi");
+        item2.setOwner(p);
+        item2.setCategory(cat2);
+        item2.setPriority(TodoItem.Priority.HIGH);
+        itemRepo.save(item2);
+        
         p.getTodos().add(item);
         personRepo.save(p);
     }
+    
 }

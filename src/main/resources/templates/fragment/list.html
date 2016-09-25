@@ -1,0 +1,31 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Lists</title>
+    </head>
+    <body>
+        <div th:fragment="sublist">
+            <ul>
+                <li th:each="category : ${category.subcategories}" >
+                    <span th:text="${category.name}">Category</span>
+                    <div th:with="category = ${category}" th:include="fragment/list :: sublist" th:remove="tag" />
+                </li>
+                <li th:each="item : ${category.items}">
+                    <div th:with="item = ${item}" th:include="fragment/list :: item" th:remove="tag" />
+                </li>
+            </ul>
+        </div>
+
+        <div th:fragment="item">
+            <div class="tool-buttons pull-right clearfix">
+                <a class="edit-item" th:href="@{/todo/{id}(id=${item.id})}" aria-label="Muokkaa" title="Muokkaa" data-toggle="tooltip">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+                <form class="delete-item" th:action="@{/todo/{id}(id=${item.id})}" th:method="delete">
+                    <button type="submit" class="btn-link" aria-label="Poista" title="Poista" data-toggle="tooltip"><span class="glyphicon glyphicon-remove"></span></button>
+                </form>
+            </div>
+            <span th:text="${item.description}">tehtävä</span> (<span th:text="${item.priority}"></span>)
+        </div>
+    </body>
+</html>

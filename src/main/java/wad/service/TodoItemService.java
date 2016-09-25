@@ -1,12 +1,16 @@
 
 package wad.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wad.auth.AuthenticatedUser;
 import wad.domain.Category;
+import wad.domain.Person;
 import wad.domain.TodoItem;
-import wad.domain.TodoItemForm;
+import wad.domain.TodoItemCategoryNode;
 import wad.repository.CategoryRepository;
 import wad.repository.TodoItemRepository;
 
@@ -20,19 +24,29 @@ public class TodoItemService {
     @Autowired
     private AuthenticatedUser authenticatedUser;
     
-    public void createTodoItem(TodoItemForm form) {
-        TodoItem item = new TodoItem();
-        item.setDescription(form.getDescription());
-        item.setPriority(form.getPriority());
+    @Transactional
+    public TodoItemCategoryNode findAll() {
+        return createSubnode(authenticatedUser.get(), null);
+    }
+    
+    // Recursively build a node hierarchy with a list of TodoItems and subnodes (subcategories)
+    private TodoItemCategoryNode createSubnode(Person owner, Category category) {
+        TodoItemCategoryNode node = new TodoItemCategoryNode();
+        node.setItems(itemRepo.findAllByOwnerAndCategory(owner, category));
+        node.setName(category == null ? "Luokittelemattomat" : category.getName());
+        
+        List<Category> categories = catRepo.findAllByOwnerAndParentCategory(owner, category);
+        List<TodoItemCategoryNode> subnodes = new ArrayList<>();
+        for(Category c : categories){
+            subnodes.add(createSubnode(owner, c));
+        }
+        node.setSubcategories(subnodes);
+        return node;
+    }
+    
+    public void create(TodoItem item) {
         item.setOwner(authenticatedUser.get());
         
-        Category category = getCategory(form.getCategoryName());
-        if(category != null) {
-            item.setCategory(category);
-            Category parentCategory = catRepo.findOneByName(form.getParentCategory());
-            if(parentCategory != null)
-                category.setParentCategory(parentCategory);
-        }
         itemRepo.save(item);
     }
 
@@ -40,12 +54,12 @@ public class TodoItemService {
         return itemRepo.findOne(id);
     }
 
-    public void update(Long id, TodoItemForm form) {
+    public void update(Long id, TodoItem updatedItem) {
         TodoItem item = itemRepo.findOne(id);
         if(item != null) {
-            item.setDescription(form.getDescription());
-            item.setCategory(getCategory(form.getCategoryName()));
-            item.setPriority(form.getPriority());
+            item.setDescription(updatedItem.getDescription());
+            item.setCategory(updatedItem.getCategory());
+            item.setPriority(updatedItem.getPriority());
             itemRepo.save(item);
         }
     }
@@ -55,16 +69,5 @@ public class TodoItemService {
         if(item != null) {
             itemRepo.delete(item);
         }
-    }
-    
-    private Category getCategory(String name) {
-        Category cat = catRepo.findOneByName(name);
-        if(cat == null) {
-            cat = new Category();
-            cat.setName(name);
-            cat.setOwner(authenticatedUser.get());
-            catRepo.save(cat);
-        }
-        return cat;
     }
 }

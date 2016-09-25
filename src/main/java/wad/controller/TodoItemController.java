@@ -16,14 +16,12 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import wad.domain.Category;
 import wad.domain.TodoItem;
-import wad.domain.TodoItemForm;
 import wad.repository.CategoryRepository;
 import wad.repository.TodoItemRepository;
 import wad.service.CategoryService;
 import wad.service.TodoItemService;
 
 @Controller
-@SessionAttributes({"todoItemForm"})
 public class TodoItemController {
     
     @Autowired
@@ -31,37 +29,33 @@ public class TodoItemController {
     @Autowired
     private CategoryService catService;
     
-    @ModelAttribute("todoItemForm")
-    public TodoItemForm getTodoItemForm() {
-        return new TodoItemForm();
-    }
-    
     @RequestMapping(value="/todo/{id}", method=RequestMethod.GET)
-    public String editItem(Model model, @PathVariable Long id, TodoItemForm todoItemForm) {
+    public String editItem(Model model, @PathVariable Long id) {
         model.addAttribute("item", itemService.get(id));
         model.addAttribute("categories", catService.findAll());
-        return "edit-item";
+        return "form/editItem";
     }
     
     @RequestMapping(value="/todo", method=RequestMethod.POST)
-    public String addItem(@Valid @ModelAttribute TodoItemForm form, BindingResult bindingResult) {
-        if (!bindingResult.hasErrors()) {
-            itemService.createTodoItem(form);
+    public String addItem(@Valid @ModelAttribute TodoItem item, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "form/addItem";
         }
+        itemService.create(item);
         return "redirect:/";
     }
     
     @RequestMapping(value="/todo/{id}", method=RequestMethod.POST)
     public String updateItem(
-            @Valid @ModelAttribute("todoItemForm") TodoItemForm form, 
-            BindingResult bindingResult, @PathVariable Long id,
-            SessionStatus sessionStatus) {
+            @Valid @ModelAttribute TodoItem item, 
+            BindingResult bindingResult, @PathVariable Long id, Model model) {
         
         if (bindingResult.hasErrors()) {
-            return "redirect:/todo/" + id;
+            model.addAttribute("item", itemService.get(id));
+            model.addAttribute("categories", catService.findAll());
+            return "form/editItem";
         }
-        sessionStatus.setComplete();
-        itemService.update(id, form);
+        itemService.update(id, item);
         return "redirect:/";
     }
     

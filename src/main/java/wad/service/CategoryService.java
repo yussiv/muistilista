@@ -19,4 +19,9 @@ public class CategoryService {
     public List<Category> findAll() {
         return catRepo.findAllByOwner(authenticatedUser.get());
     }
+
+    public void create(Category category) {
+        category.setOwner(authenticatedUser.get());
+        catRepo.save(category);
+    }
 }

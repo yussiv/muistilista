@@ -9,5 +9,7 @@ import wad.domain.Person;
 public interface CategoryRepository extends JpaRepository<Category,Long> {
     public Category findOneByName(String name);
 
-    public List<Category> findAllByOwner(Person person);
+    public List<Category> findAllByOwner(Person owner);
+
+    public List<Category> findAllByOwnerAndParentCategory(Person owner, Category category);
 }

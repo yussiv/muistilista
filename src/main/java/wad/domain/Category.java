@@ -5,11 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
 public class Category extends AbstractPersistable<Long> {
     @NotNull
+    @NotEmpty
     private String name;
     @ManyToOne
     private Person owner;

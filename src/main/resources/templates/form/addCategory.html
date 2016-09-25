@@ -1,0 +1,14 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:include="fragment/layout :: head">
+        <title id="pageTitle">Lisää kategoria</title>
+    </head>
+    <body>
+        <div class="container">
+            <h3>Lisää kategoria</h3>
+            <div th:include="fragment/form :: addCategory" th:remove="tag"></div>
+        </div>
+        <footer th:replace="fragment/layout :: footer"></footer>
+        <div th:include="fragment/layout :: footer-scripts"></div>
+    </body>
+</html>

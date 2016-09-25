@@ -1,9 +1,7 @@
 
 package wad.domain;
 
-import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
@@ -32,7 +30,7 @@ public class TodoItem extends AbstractPersistable<Long> {
     @NotNull
     @NotEmpty
     private String description;
-    private Priority priority;
+    private Priority priority = Priority.NORMAL;
     @OneToOne
     private Category category;
     @ManyToOne
