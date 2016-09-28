@@ -13,7 +13,7 @@ import wad.service.JpaAuthenticationProvider;
 
 @EnableWebSecurity
 @Configuration
-@Profile("default")
+@Profile({"default","test"})
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     
     @Autowired

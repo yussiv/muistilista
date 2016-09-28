@@ -22,7 +22,6 @@ public class DevSecurityConfiguration extends WebSecurityConfigurerAdapter {
     
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        System.out.println("devaa");
         http.csrf().disable();
         http.headers().frameOptions().sameOrigin();
         

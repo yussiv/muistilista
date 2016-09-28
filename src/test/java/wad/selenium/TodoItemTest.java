@@ -22,11 +22,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.fluentlenium.core.filter.FilterConstructor.withText;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import wad.domain.Person;
 import wad.repository.PersonRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles(value="test")
 public class TodoItemTest extends FluentTest {
     
     public WebDriver webDriver = new HtmlUnitDriver(true);
@@ -94,9 +96,9 @@ public class TodoItemTest extends FluentTest {
         String newDesc = "Edited selenium item";
         
         fill(find("input[name='description']")).with(newDesc);
-        submit(find("form").first());
+        submit(find("form#form-edit-item").first());
         
-        assertTrue("Wrong url", webDriver.getCurrentUrl().equals(baseUrl));
+        assertEquals("Wrong url", baseUrl, webDriver.getCurrentUrl());
         
         assertFalse("Old description is still present", pageSource().contains(desc));
         

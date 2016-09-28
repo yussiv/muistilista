@@ -7,7 +7,7 @@
         <header th:include="fragment/layout :: header" class="site-header"></header>
         <div class="container">
             <h2>Tehtävä</h2>
-            <form th:action="@{/todo/{id}(id=${todoItem.id})}" method="POST" class="add-item" th:object="${todoItem}">
+            <form th:action="@{/todo/{id}(id=${todoItem.id})}" id="form-edit-item" method="POST" class="add-item" th:object="${todoItem}">
                 <div class="form-group">
                     <label for="description">Kuvaus:</label>
                     <input type="text" class="form-control" th:field="*{description}"/>
