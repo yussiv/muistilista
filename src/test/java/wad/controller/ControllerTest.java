@@ -15,11 +15,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import wad.auth.AuthenticatedUser;
+import wad.domain.Person;
 import wad.domain.TodoItem;
+import wad.repository.PersonRepository;
 import wad.repository.TodoItemRepository;
 
 @RunWith(SpringRunner.class)
@@ -33,34 +37,49 @@ public class ControllerTest {
     
     @Autowired
     private TodoItemRepository itemRepo;
-    
+    @Autowired
+    private AuthenticatedUser authenticatedUser;
+    @Autowired
+    private PersonRepository personRepo;
         
     @Before
     public void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).build();
-    }
-    
-    @Test
-    public void frontpageContainsAllItems() throws Exception {
-        MvcResult result =mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("items"))
-                .andReturn();
         
-        String content = result.getResponse().getContentAsString();
-        for(TodoItem item : itemRepo.findAll()) {
-            assertTrue("Front page does not contain all TodoItems", content.contains(item.getDescription()));
+        if(personRepo.findByUsername("user") == null){
+            //set up test user
+            Person testUser = new Person();
+            testUser.setName("Test User");
+            testUser.setUsername("user");
+            testUser.setPassword("password");
+
+            personRepo.save(testUser);
         }
     }
     
     @Test
+    @WithMockUser
+    public void frontpageContainsAllItems() throws Exception {
+        MvcResult result =mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("itemNode"))
+                .andReturn();
+        
+        String content = result.getResponse().getContentAsString();
+        for(TodoItem item : itemRepo.findAllByOwner(authenticatedUser.get())) {
+            assertTrue("Front page does not contain all TodoItems of user", content.contains(item.getDescription()));
+        }
+    }
+    
+    @Test
+    @WithMockUser
     public void canAddItemToList() throws Exception {
         String description = UUID.randomUUID().toString();
         addItemToList(description);
         
-        MvcResult result =mockMvc.perform(get("/"))
+        MvcResult result = mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("items"))
+                .andExpect(model().attributeExists("itemNode"))
                 .andReturn();
         
         String content = result.getResponse().getContentAsString();
@@ -69,6 +88,7 @@ public class ControllerTest {
     }
     
     @Test
+    @WithMockUser
     public void canRemoveItemFromList() throws Exception {
         String description = UUID.randomUUID().toString();
         
@@ -86,12 +106,12 @@ public class ControllerTest {
         
     }
     
+    
     private void addItemToList(String description) throws Exception {
         mockMvc.perform(
                     post("/todo")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                     .param("description", description)
-                    .param("categoryName", "testing")
                 )
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));

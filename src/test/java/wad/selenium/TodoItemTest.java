@@ -21,6 +21,9 @@ import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.fluentlenium.core.filter.FilterConstructor.withText;
+import org.springframework.beans.factory.annotation.Autowired;
+import wad.domain.Person;
+import wad.repository.PersonRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -28,6 +31,9 @@ public class TodoItemTest extends FluentTest {
     
     public WebDriver webDriver = new HtmlUnitDriver(true);
     private String baseUrl;
+    
+    @Autowired
+    private PersonRepository personRepo;
 
     @Override
     public WebDriver getDefaultDriver() {
@@ -40,6 +46,22 @@ public class TodoItemTest extends FluentTest {
     @Before
     public void setVariables() {
         this.baseUrl = "http://localhost:" + port + "/";
+        
+        // add test user
+        if(personRepo.findByUsername("user") == null){
+            //set up test user
+            Person testUser = new Person();
+            testUser.setName("Test User");
+            testUser.setUsername("user");
+            testUser.setPassword("password");
+
+            personRepo.save(testUser);
+        }
+        // login with credentials created
+        goTo(baseUrl + "login");
+        fill(find("input[type='text']")).with("user");
+        fill(find("input[type='password']")).with("password");
+        submit(find("form").first());
     }
 
     @Test

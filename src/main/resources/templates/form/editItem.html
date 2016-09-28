@@ -4,9 +4,10 @@
         <title id="pageTitle">Muistilista - Muokkaa tehtävää</title>
     </head>
     <body>
+        <header th:include="fragment/layout :: header" class="site-header"></header>
         <div class="container">
             <h2>Tehtävä</h2>
-            <form th:action="@{/todo/{id}(id=${item.id})}" method="POST" class="add-item" th:object="${item}">
+            <form th:action="@{/todo/{id}(id=${todoItem.id})}" method="POST" class="add-item" th:object="${todoItem}">
                 <div class="form-group">
                     <label for="description">Kuvaus:</label>
                     <input type="text" class="form-control" th:field="*{description}"/>
@@ -23,7 +24,7 @@
                 <div class="form-group">
                     <label for="priority">Kiireellisyys:</label>
                     <select name="priority" class="form-control" th:field="*{priority}">
-                        <option th:each="priority : ${T(wad.domain.TodoItem.Priority).values()}" th:value="${priority.name}" th:text="${priority}" th:attrappend="selected=${priority == item.priority}?'selected'">Kiireellisyys</option>
+                        <option th:each="priority : ${T(wad.domain.TodoItem.Priority).values()}" th:value="${priority.name}" th:text="${priority}" th:attrappend="selected=${priority == todoItem.priority}?'selected'">Kiireellisyys</option>
                     </select>
                     <p class="text-danger" th:if="${#fields.hasErrors('priority')}" th:errors="*{priority}"></p>
                 </div>

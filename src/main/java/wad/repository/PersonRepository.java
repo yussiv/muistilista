@@ -6,4 +6,6 @@ import wad.domain.Person;
 
 public interface PersonRepository extends JpaRepository<Person,Long> {
 
+    public Person findByUsername(String username);
+
 }

@@ -34,6 +34,7 @@ public class TodoItem extends AbstractPersistable<Long> {
     @OneToOne
     private Category category;
     @ManyToOne
+    @NotNull
     private Person owner;
 
     public void setPriority(Priority priority) {

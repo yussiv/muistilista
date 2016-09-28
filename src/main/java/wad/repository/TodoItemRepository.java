@@ -13,4 +13,6 @@ public interface TodoItemRepository extends JpaRepository<TodoItem,Long> {
 
     public List<TodoItem> findAllByOwnerAndCategory(Person owner, Category category);
 
+    public List<TodoItem> findAllByOwner(Person owner);
+
 }

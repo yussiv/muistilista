@@ -1,8 +1,9 @@
 
-package wad.configure;
+package wad.devconfig;
 
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import wad.domain.Category;
 import wad.domain.Person;
@@ -12,6 +13,7 @@ import wad.repository.PersonRepository;
 import wad.repository.TodoItemRepository;
 
 @Component
+@Profile("development")
 public class DevInit {
     
     @Autowired

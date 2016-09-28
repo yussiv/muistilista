@@ -4,6 +4,7 @@
         <title id="pageTitle">Lisää kategoria</title>
     </head>
     <body>
+        <header th:include="fragment/layout :: header" class="site-header"></header>
         <div class="container">
             <h3>Lisää kategoria</h3>
             <div th:include="fragment/form :: addCategory" th:remove="tag"></div>

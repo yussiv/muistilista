@@ -1,6 +1,6 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    
+
     <head th:fragment="head">
         <title th:include=":: #pageTitle">Layout Generic Title</title>
         <meta charset="UTF-8" />
@@ -10,13 +10,29 @@
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     </head>
     <body>
+        <header th:fragment="header" class="site-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form class="pull-right logout-form" th:action="@{/logout}" method="post">
+                            <button type="submit" class="btn-logout" data-placement="bottom" data-toggle="tooltip" title="Kirjaudu ulos">
+                                <span class="glyphicon glyphicon-log-out"></span>
+                            </button>
+                        </form>
+                        
+                        <h1 class="site-title">Muistilista</h1>
+                    </div>
+                </div>
+            </div>
+
+        </header>
         <footer th:fragment="footer" class="container">
-            &copy; 2016
+            &copy; 2016 yussiv 
         </footer>
         <div th:fragment="footer-scripts">
             <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script>
-                $(document).ready(function(){
+                $(document).ready(function () {
                     $('[data-toggle="tooltip"]').tooltip();
                 });
             </script>

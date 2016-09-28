@@ -2,6 +2,8 @@
 package wad.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import wad.domain.Person;
 import wad.repository.PersonRepository;
@@ -13,6 +15,7 @@ public class AuthenticatedUser {
     private PersonRepository personRepo;
 
     public Person get() {
-        return personRepo.findOne(1L);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return personRepo.findByUsername(auth.getName());
     }
 }

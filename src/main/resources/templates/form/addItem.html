@@ -4,6 +4,7 @@
         <title id="pageTitle">Lisää tehtävä</title>
     </head>
     <body>
+        <header th:include="fragment/layout :: header" class="site-header"></header>
         <div class="container">
             <h3>Lisää tehtävä</h3>
             <div th:include="fragment/form :: addItem" th:remove="tag"></div>

@@ -4,23 +4,29 @@
         <title id="pageTitle">Muistilista</title>
     </head>
     <body>
+        <header th:include="fragment/layout :: header" class="site-header"></header>
         <div class="container">
-            <h1>Tehtävää</h1>
-            <ul>
-                <li th:each="category : ${itemNode.subcategories}" >
-                    <span th:text="${category.name}">Category</span>
-                    <div th:with="category = ${category}" th:include="fragment/list :: sublist" th:remove="tag" />
-                </li>
-                <li th:each="item : ${itemNode.items}">
-                    <div th:with="item = ${item}" th:include="fragment/list :: item" th:remove="tag" />
-                </li>
-            </ul>
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1>Tehtävää</h1>
+                    <h4 class="text-info" th:if="${#lists.isEmpty(itemNode.items)} and ${#lists.isEmpty(itemNode.subcategories)}">Ei tehtäviä, lisääpä muutama</h4>
+                    <div th:include="fragment/list :: sublist" th:with="category=${itemNode}"></div>
+                </div>
+            </div>
         </div>
-        <div class="container">
-            <h4>Lisää tehtävä</h4>
-            <form th:include="fragment/form :: addItem" th:remove="tag"></form>
-            <h4>Lisää kategoria</h4>
-            <form th:include="fragment/form :: addCategory" th:remove="tag"></form>
+        <div class="form-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <h4>Lisää tehtävä</h4>
+                        <form th:include="fragment/form :: addItem" th:remove="tag"></form>
+                    </div>
+                    <div class="col-sm-5 col-sm-offset-2 add-category">
+                        <h4>Lisää kategoria</h4>
+                        <form th:include="fragment/form :: addCategory" th:remove="tag"></form>
+                    </div>
+                </div>
+            </div>
         </div>
         <footer th:replace="fragment/layout :: footer"></footer>
         <div th:include="fragment/layout :: footer-scripts"></div>
